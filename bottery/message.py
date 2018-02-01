@@ -21,7 +21,8 @@ class Message:
         return datetime.utcfromtimestamp(self.timestamp)
 
 
-def render(message, template_name, context={}):
+def render(message, template_name, context=None):
+    context = context or dict()
     base_dir = os.path.join(os.getcwd(), 'templates')
     paths = [base_dir]
     # Include paths on settings
