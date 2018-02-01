@@ -63,6 +63,7 @@ class MessengerEngine(BaseEngine):
             timestamp=data['timestamp'],
             raw=data,
             chat=None,  # TODO: Refactor build_messages and Message class
+            settings=self.settings,
         )
 
     async def message_handler(self, data):

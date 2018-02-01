@@ -130,6 +130,7 @@ class TelegramEngine(platform.BaseEngine):
         return Message(
             id=message_data['message_id'],
             platform=self.platform,
+            settings=self.settings,
             text=message_data['text'],
             user=TelegramUser(message_data['from']),
             chat=TelegramChat(message_data['chat']),
