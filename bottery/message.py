@@ -14,7 +14,7 @@ class Message:
     text = attr.ib()
     timestamp = attr.ib()
     raw = attr.ib()
-    settings = attr.ib()
+    templates_dirs = attr.ib()
 
     @property
     def datetime(self):
@@ -25,7 +25,7 @@ def render(message, template_name, context={}):
     base_dir = os.path.join(os.getcwd(), 'templates')
     paths = [base_dir]
     # Include paths on settings
-    paths.extend(message.settings.TEMPLATES)
+    paths.extend(message.templates_dirs)
 
     env = Environment(
         loader=FileSystemLoader(paths),
