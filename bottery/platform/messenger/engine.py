@@ -43,6 +43,11 @@ class MessengerEngine(BaseEngine):
         if not content.get('object') == 'page':
             return web.HTTPBadRequest()
 
+        try:
+            messages = content['entry'][0]['messaging']
+        except KeyError:
+            return web.HTTPBadRequest()
+
         messages = content['entry'][0]['messaging']
         updates = [self.message_handler(message) for message in messages]
         await asyncio.gather(*updates)
@@ -55,6 +60,11 @@ class MessengerEngine(BaseEngine):
         '''
         if not data:
             return None
+
+        if 'postback' in data:
+            data['message'] = data['postback']
+            data['message']['text'] = data['postback']['payload']
+            data['message']['mid'] = data['postback']['title']
 
         return Message(
             id=data['message']['mid'],
