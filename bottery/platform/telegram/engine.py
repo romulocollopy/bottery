@@ -95,7 +95,8 @@ class TelegramEngine(platform.BaseEngine):
 
         tasks = [self.message_handler(msg) for msg in result]
         await asyncio.gather(*tasks)
-        asyncio.ensure_future(self.polling(last_update))
+        if last_update:
+            asyncio.ensure_future(self.polling(last_update))
 
     async def configure_webhook(self):
         hostname = getattr(self.settings, 'HOSTNAME')
