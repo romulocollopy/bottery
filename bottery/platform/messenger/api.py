@@ -1,5 +1,7 @@
 import logging
 
+from bottery.platform.messenger.message import ButtonMessage
+
 logger = logging.getLogger('bottery.messenger')
 
 
@@ -14,15 +16,37 @@ class MessengerAPI:
     def make_url(self, method):
         return self.url.format(self.version, method, self.token)
 
-    async def messages(self, user_id, text, type='RESPONSE'):
-        request = {
-            'messaging_type': type,
-            'recipient': {
-                'id': user_id,
-            },
-            'message': {
-                'text': text,
-            },
-        }
+    async def messages(self, response, type='RESPONSE'):
+        if isinstance(response.source, ButtonMessage):
+            buttons = [
+                {'type': b.type, 'title': b.title, 'payload': b.payload}
+                for b in response.source.buttons
+            ]
+            request = {
+                'recipient': {
+                    'id': response.source.user,
+                },
+                'message': {
+                    'attachment': {
+                        'type': 'template',
+                        'payload': {
+                            'template_type': 'button',
+                            'text': response.source.text,
+                            'buttons': buttons
+                        }
+                    }
+                },
+            }
+        else:
+            request = {
+                'message_type': type,
+                'recipient': {
+                    'id': response.source.user,
+                },
+                'message': {
+                    'text': response.text,
+                },
+            }
+
         url = self.make_url('/me/messages')
         return await self.session.post(url, json=request)
