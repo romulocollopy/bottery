@@ -58,13 +58,14 @@ class MessengerEngine(BaseEngine):
         Return a Message instance according to the data received from
         Facebook Messenger API.
         '''
-        if not data or 'text' not in data.get('message', []):
-            return None
 
         if 'postback' in data:
             data['message'] = data['postback']
             data['message']['text'] = data['postback']['payload']
             data['message']['mid'] = data['postback']['title']
+
+        if not data or 'text' not in data.get('message', []):
+            return None
 
         return Message(
             id=data['message'].get('mid'),
